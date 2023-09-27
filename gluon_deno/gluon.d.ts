@@ -198,6 +198,8 @@ type BrowserEngine = 'chromium'|'firefox';
 
 /** Additional options for opening */
 type OpenOptions = {
+  windowSize?: number[],
+
   /** Function to evaluate in the web context once loaded. */
   onLoad?: Function,
 
