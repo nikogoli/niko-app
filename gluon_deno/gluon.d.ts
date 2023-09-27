@@ -205,6 +205,9 @@ type OpenOptions = {
 
   /** Force Gluon to use a browser instead of automatically finding. */
   forceBrowser?: Browser,
+
+  /** Manually set the browser-data directory's path. */
+  dataDirPath?: string,
 };
 
 /**

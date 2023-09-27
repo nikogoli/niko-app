@@ -150,13 +150,13 @@ const getBrowserType = name => { // todo: not need this
   return 'chromium';
 };
 
-const startBrowser = async (url, { windowSize, forceBrowser }) => {
+const startBrowser = async (url, { windowSize, forceBrowser }, dataDir_path) => {
   const [ browserPath, browserName ] = await findBrowserPath(forceBrowser);
   const browserFriendlyName = getFriendlyName(browserName);
 
   if (!browserPath) return log('failed to find a good browser install');
 
-  const dataPath = getDataPath(browserName);
+  const dataPath = dataDir_path ? dataDir_path : getDataPath(browserName);
   const browserType = getBrowserType(browserName);
 
   log('found browser', browserName, `(${browserType} based)`, 'at path:', browserPath);
@@ -174,10 +174,10 @@ const startBrowser = async (url, { windowSize, forceBrowser }) => {
   return Window;
 };
 
-export const open = async (url, { windowSize, onLoad, forceBrowser } = {}) => {
+export const open = async (url, { windowSize, onLoad, forceBrowser, dataDirPath } = {}) => {
   log('starting browser...');
 
-  const Browser = await startBrowser(url, { windowSize, forceBrowser });
+  const Browser = await startBrowser(url, { windowSize, forceBrowser }, dataDirPath);
 
   if (onLoad) {
     const toRun = `(() => {
