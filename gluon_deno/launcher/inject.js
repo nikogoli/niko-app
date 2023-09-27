@@ -1,7 +1,10 @@
+import { cyan } from "https://deno.land/std@0.200.0/fmt/colors.ts";
 import IPCApi from '../lib/ipc.js';
 
 import IdleApi from '../api/idle.js';
 import ControlsApi from '../api/controls.js';
+
+const log = (...args) => console.log(`[${cyan('Gluon')}]`, ...args);
 
 export default async (CDP, proc, injectionType = 'browser', { browserName } = { browserName: 'unknown' }) => {
   let pageLoadCallback, pageLoadPromise = new Promise(res => pageLoadCallback = res);

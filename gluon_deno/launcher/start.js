@@ -1,7 +1,10 @@
 import { spawn } from 'https://deno.land/std@0.170.0/node/child_process.ts';
+import { cyan } from "https://deno.land/std@0.200.0/fmt/colors.ts";
 
 import ConnectCDP from '../lib/cdp.js';
 import InjectInto from './inject.js';
+
+const log = (...args) => console.log(`[${cyan('Gluon')}]`, ...args);
 
 const portRange = [ 10000, 60000 ];
 

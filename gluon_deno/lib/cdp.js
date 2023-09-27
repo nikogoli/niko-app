@@ -1,4 +1,7 @@
 import { get } from 'https://deno.land/std@0.170.0/node/http.ts';
+import { cyan } from "https://deno.land/std@0.200.0/fmt/colors.ts";
+
+const log = (...args) => console.log(`[${cyan('Gluon')}]`, ...args);
 
 const logCDP = Deno.args.includes('--cdp-logging');
 

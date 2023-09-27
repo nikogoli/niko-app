@@ -1,4 +1,7 @@
 import { exec } from 'https://deno.land/std@0.170.0/node/child_process.ts';
+import { cyan } from "https://deno.land/std@0.200.0/fmt/colors.ts";
+
+const log = (...args) => console.log(`[${cyan('Gluon')}]`, ...args);
 
 const killProcesses = async pids => Deno.build.os !== 'windows' ? Promise.resolve('') : new Promise(resolve => exec(`taskkill /F ${pids.map(x => `/PID ${x}`).join(' ')}`, (e, out) => resolve(out)));
 
