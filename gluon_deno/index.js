@@ -8,6 +8,7 @@ Deno.version = { // have to do this because... Deno
 
 import { join, dirname, delimiter, sep } from 'https://deno.land/std@0.170.0/node/path.ts';
 import { access, readdir } from 'https://deno.land/std@0.170.0/node/fs/promises.ts';
+import { parse } from "https://deno.land/std@0.170.0/flags/mod.ts";
 
 import Chromium from './browser/chromium.js';
 import Firefox from './browser/firefox.js';
@@ -140,7 +141,10 @@ const findBrowserPath = async (forceBrowser) => {
 
 const getFriendlyName = whichBrowser => whichBrowser[0].toUpperCase() + whichBrowser.slice(1).replace(/[a-z]_[a-z]/g, _ => _[0] + ' ' + _[2].toUpperCase());
 
-const ranJsDir = !Deno.args[0] ? Deno.cwd() : (Deno.args[0].endsWith('.js') ? dirname(Deno.args[0]) : Deno.args[0]);
+const FirstNonKeyArg = parse(Deno.args)["_"][0]
+const ranJsDir = !FirstNonKeyArg
+    ? Deno.cwd()
+    : (FirstNonKeyArg.endsWith('.js') ? dirname(FirstNonKeyArg) : FirstNonKeyArg);
 const getDataPath = browser => join(ranJsDir, 'gluon_data', browser);
 
 const getBrowserType = name => { // todo: not need this
