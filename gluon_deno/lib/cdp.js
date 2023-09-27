@@ -2,7 +2,10 @@ import { get } from 'https://deno.land/std@0.170.0/node/http.ts';
 
 const logCDP = Deno.args.includes('--cdp-logging');
 
-export default async ({ pipe: { pipeWrite, pipeRead } = {}, port }) => {
+export default async (
+  {pipe: { pipeWrite, pipeRead } = {}, port },
+  onWebSocketClose
+) => {
   let messageCallbacks = [], onReply = {};
   const onMessage = msg => {
     if (closed) return; // closed, ignore
@@ -89,6 +92,12 @@ export default async ({ pipe: { pipeWrite, pipeRead } = {}, port }) => {
     await new Promise(resolve => ws.onopen = resolve);
 
     ws.onmessage = ({ data }) => onMessage(data);
+    if (onWebSocketClose){
+      ws.onclose = (ev) => {
+        log('The connection with the WebSocket has been closed')
+        onWebSocketClose(ev)
+      }
+    }
     
     _send = data => ws.send(data);
     _close = () => ws.close();

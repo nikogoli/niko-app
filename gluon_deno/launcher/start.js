@@ -5,7 +5,13 @@ import InjectInto from './inject.js';
 
 const portRange = [ 10000, 60000 ];
 
-export default async (browserPath, args, transport, extra) => {
+export default async (
+  browserPath,
+  args,
+  transport,
+  extra,
+  onWebSocketClose
+) => {
   const port = transport === 'websocket' ? (Math.floor(Math.random() * (portRange[1] - portRange[0] + 1)) + portRange[0]) : null;
 
   const proc = spawn(browserPath, [
@@ -21,12 +27,12 @@ export default async (browserPath, args, transport, extra) => {
   let CDP;
   switch (transport) {
     case 'websocket':
-      CDP = await ConnectCDP({ port });
+      CDP = await ConnectCDP({ port }, onWebSocketClose);
       break;
 
     case 'stdio':
       const { 3: pipeWrite, 4: pipeRead } = proc.stdio;
-      CDP = await ConnectCDP({ pipe: { pipeWrite, pipeRead } });
+      CDP = await ConnectCDP({ pipe: { pipeWrite, pipeRead } }, onWebSocketClose);
       break;
   }
 

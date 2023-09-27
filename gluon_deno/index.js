@@ -154,7 +154,12 @@ const getBrowserType = name => { // todo: not need this
   return 'chromium';
 };
 
-const startBrowser = async (url, { windowSize, forceBrowser }, dataDir_path) => {
+const startBrowser = async (
+  url,
+  { windowSize, forceBrowser },
+  dataDir_path,
+  onWebSocketClose
+) => {
   const [ browserPath, browserName ] = await findBrowserPath(forceBrowser);
   const browserFriendlyName = getFriendlyName(browserName);
 
@@ -173,15 +178,19 @@ const startBrowser = async (url, { windowSize, forceBrowser }, dataDir_path) => 
   }, {
     url,
     windowSize
-  });
+  },
+    onWebSocketClose
+  );
 
   return Window;
 };
 
-export const open = async (url, { windowSize, onLoad, forceBrowser, dataDirPath } = {}) => {
+export const open = async (
+  url, { windowSize, onLoad, forceBrowser, dataDirPath, onWebSocketClose } = {}
+) => {
   log('starting browser...');
 
-  const Browser = await startBrowser(url, { windowSize, forceBrowser }, dataDirPath);
+  const Browser = await startBrowser(url, { windowSize, forceBrowser }, dataDirPath, onWebSocketClose);
 
   if (onLoad) {
     const toRun = `(() => {

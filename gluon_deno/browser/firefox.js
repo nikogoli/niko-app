@@ -4,7 +4,7 @@ import { join } from 'https://deno.land/std@0.170.0/node/path.ts';
 import StartBrowser from '../launcher/start.js';
 
 
-export default async ({ browserName, browserPath, dataPath }, { url, windowSize }) => {
+export default async ({ browserName, browserPath, dataPath }, { url, windowSize }, onWebSocketClose) => {
   await mkdir(dataPath, { recursive: true });
   await writeFile(join(dataPath, 'user.js'), `
 user_pref("toolkit.legacyUserProfileCustomizations.stylesheets", true);
@@ -79,5 +79,5 @@ html:not([tabsintitlebar="true"]) .tab-icon-image {
     `-new-window`, url,
     `-new-instance`,
     `-no-remote`
-  ], 'websocket', { browserName });
+  ], 'websocket', { browserName }, onWebSocketClose);
 };

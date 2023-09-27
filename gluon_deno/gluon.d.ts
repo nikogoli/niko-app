@@ -208,6 +208,9 @@ type OpenOptions = {
 
   /** Manually set the browser-data directory's path. */
   dataDirPath?: string,
+
+  /** Function excuted on WebSocket's close event. */
+  onWebSocketClose?: (ev:CloseEvent) => void
 };
 
 /**
