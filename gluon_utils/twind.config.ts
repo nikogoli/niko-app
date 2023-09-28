@@ -16,7 +16,7 @@ const neutral = {
   900: "#171717"// 23
 } as const
 
-export default {
+export const DefaultTwConfig = {
   selfURL: import.meta.url,
   theme: {
     colors: {

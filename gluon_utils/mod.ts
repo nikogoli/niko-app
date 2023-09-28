@@ -6,5 +6,5 @@ export {
 } from "../niko_router/mod.ts"
 
 export { setHTML, type ViewConfig, type SetViewProps } from "./setHTML.tsx"
-export * as DefaulTwConfig from "./twind.config.ts"
+export { DefaultTwConfig } from "./twind.config.ts"
 export { signal, Signal } from "./signals.js"
