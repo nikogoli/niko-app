@@ -5,8 +5,7 @@ Deno.version = { // have to do this because... Deno
   gluon: '0.10.0-deno'
 };
 
-import { join, dirname, delimiter, sep } from 'https://deno.land/std@0.170.0/node/path.ts';
-import { access, readdir } from 'https://deno.land/std@0.170.0/node/fs/promises.ts';
+import { join, dirname, delimiter, SEP } from 'https://deno.land/std@0.200.0/path/mod.ts';
 import { parse } from "https://deno.land/std@0.170.0/flags/mod.ts";
 import { cyan } from "https://deno.land/std@0.200.0/fmt/colors.ts";
 
@@ -99,15 +98,24 @@ let _binariesInPath; // cache as to avoid excessive reads
 const getBinariesInPath = async () => {
   if (_binariesInPath) return _binariesInPath;
 
+  const readdir = async (x) => {
+    const names = []
+    for await (const dirEntry of Deno.readDir(x.replace(/"+/g, ''))){
+      names.push(dirEntry.name)
+    }
+    return names
+  }
+
   return _binariesInPath = (await Promise.all(Deno.env.get('PATH')
     .replaceAll('"', '')
     .split(delimiter)
     .filter(Boolean)
-    .map(x => readdir(x.replace(/"+/g, '')).catch(() => [])))).flat();
+    .map( async x => await readdir(x).catch(_e => []))
+  )).flat();
 };
 
 const exists = async path => {
-  if (path.includes(sep)) return await access(path).then(() => true).catch(() => false);
+  if (path.includes(SEP)) return await Deno.stat(path).then(() => true).catch(() => false);
 
   // just binary name, so check path
   return (await getBinariesInPath()).includes(path);
