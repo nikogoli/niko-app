@@ -1,5 +1,5 @@
 // @deno-types="./gluon_deno/gluon.d.ts"
-export * as Gluon from "./gluon_deno/index.js"
+export * as Gluon from "../gluon_deno/index.js"
 
 export { setHTML, type ViewConfig, type SetViewProps } from "./utils/setHTML.tsx"
 export { signal, type Signal } from "./utils/signals.js"
