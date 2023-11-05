@@ -6,9 +6,13 @@ export function HeaderHTML(props:{
   script:string,
   viewconfig: ViewConfig,
 }){
-  const { title, google_fonts, tw_config, css } = props.viewconfig
+  const { title, google_fonts, twind_config, css } = props.viewconfig
   const fontlink = (google_fonts)
     ? google_fonts.reduce((txt, f) => txt+`family=${f.replaceAll(" ", "+")}&`, "https://fonts.googleapis.com/css2?") + "display=swap"
+    : null
+
+  const twind_config_script = (twind_config && typeof twind_config != "string")
+    ? `twind.install(${JSON.stringify(twind_config)})`
     : null
 
   return(
@@ -19,9 +23,9 @@ export function HeaderHTML(props:{
         ? <link href={fontlink} rel="stylesheet"></link>
         : <Fragment></Fragment>
       }
-      <script type="module" src="https://cdn.skypack.dev/twind/shim"></script>
-      { (tw_config)
-        ? <script type="twind-config" dangerouslySetInnerHTML={{__html: JSON.stringify(tw_config)}}></script>
+      <script src="https://cdn.twind.style" crossOrigin="true"></script>
+      { twind_config_script
+        ? <script dangerouslySetInnerHTML={{__html: twind_config_script}}></script>
         : <Fragment></Fragment>
       }
       <script type="module" dangerouslySetInnerHTML={{__html: props.script}}></script>

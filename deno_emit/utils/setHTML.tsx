@@ -5,14 +5,15 @@ import { toFileUrl, resolve } from "https://deno.land/std@0.200.0/path/mod.ts"
 import { bundle } from "https://deno.land/x/emit@0.31.0/mod.ts"
 
 import { HeaderHTML } from "./HeaderHTML.tsx"
+import TwindConfig from "./twind.config.ts"
 
 
 export type ViewConfig = {
   title: string,
   size: [number, number],
   crient_path: string,
+  twind_config?: string | Record<string, unknown>,
   google_fonts?: Array<string>,
-  tw_config?: Record<string, unknown>,
   css?: string,
   use_worker: boolean,
   port: number,
@@ -48,6 +49,15 @@ async function route_files_to_dict(){
 export async function setHTML(props: SetViewProps){
   const { config } = props
   const { crient_path, google_fonts } = config
+
+  // ------ Set Twind config ----------
+  if (config.twind_config === undefined){
+    config.twind_config = TwindConfig as Record<string, unknown>
+  }
+  else if (typeof config.twind_config === "string"){
+    await import(toFileUrl(resolve(config.twind_config)).href)
+      .then((mod: {default:Record<string, unknown>}) => config.twind_config = mod.default)
+  }
 
   // ------ Get route files ----------
   let Name2Path_dict: Record<string, string>
