@@ -1,5 +1,5 @@
 /** @jsx h */
-import { h, Fragment } from "https://esm.sh/preact@10.10.6"
+import { h, Fragment } from "https://esm.sh/preact@10.15.1"
 import { type ViewConfig } from "./setHTML.tsx"
 
 export function HeaderHTML(props:{

@@ -1,8 +1,8 @@
 /** @jsx h */
-import { h, JSX, Fragment } from "https://esm.sh/preact@10.10.6"
 import { renderToString } from "https://esm.sh/preact-render-to-string@5.2.2?deps=preact@10.10.6"
+import { h, JSX, Fragment } from "https://esm.sh/preact@10.15.1"
 import { toFileUrl, resolve } from "https://deno.land/std@0.200.0/path/mod.ts"
-import { bundle } from "https://deno.land/x/emit@0.9.0/mod.ts"
+import { bundle } from "https://deno.land/x/emit@0.31.0/mod.ts"
 
 import { HeaderHTML } from "./HeaderHTML.tsx"
 
