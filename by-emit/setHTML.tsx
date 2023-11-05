@@ -4,7 +4,7 @@ import { toFileUrl, resolve } from "https://deno.land/std@0.200.0/path/mod.ts"
 import { bundle } from "https://deno.land/x/emit@0.31.0/mod.ts"
 
 import { HeaderHTML } from "./HeaderHTML.tsx"
-import TwindConfig from "./twind.config.ts"
+import TwindConfig from "../utils/twind.config.ts"
 
 
 export type ViewConfig = {
