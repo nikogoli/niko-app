@@ -1,5 +1,4 @@
 /** @jsx h */
-import { renderToString } from "https://esm.sh/preact-render-to-string@5.2.2?deps=preact@10.10.6"
 import { h, JSX, Fragment } from "https://esm.sh/preact@10.15.1"
 import { toFileUrl, resolve } from "https://deno.land/std@0.200.0/path/mod.ts"
 import { bundle } from "https://deno.land/x/emit@0.31.0/mod.ts"
@@ -17,6 +16,7 @@ export type ViewConfig = {
   css?: string,
   use_worker: boolean,
   port: number,
+  preact_version?: string,
 }
 
 
@@ -47,8 +47,8 @@ async function route_files_to_dict(){
 
 
 export async function setHTML(props: SetViewProps){
-  const { crient_path, google_fonts } = config
   const { config, import_map_url } = props
+  const { crient_path, google_fonts, preact_version } = config
 
   // ------ Set Twind config ----------
   if (config.twind_config === undefined){
@@ -81,7 +81,7 @@ export async function setHTML(props: SetViewProps){
 
   const CLIENT_TS =`
     /** @jsx h */
-    import { h, hydrate } from "https://esm.sh/preact@10.10.6"
+    import { h, hydrate } from "https://esm.sh/preact@${preact_version ?? "10.15.1"}"
     import { default as ${mod_name} } from "./${path}"
     hydrate( <${mod_name} ${comp_props ? `{...${JSON.stringify(comp_props)}}` : ""} />, document.body )
   `
@@ -117,7 +117,10 @@ export async function setHTML(props: SetViewProps){
     )
   }
 
-
+  const modPath = `https://esm.sh/preact-render-to-string@6.2.1?deps=preact@${
+    preact_version ?? "10.15.1"
+  }`
+  const renderToString = await import(modPath).then(mod => mod.renderToString)
   const html = renderToString(View())
   if (props.save_file){
     const tempFilePath = await Deno.makeTempFile({suffix: ".html"})
