@@ -1,7 +1,12 @@
 // @deno-types="./gluon_deno/gluon.d.ts"
 export * as Gluon from "./gluon_deno/index.js"
 
-// この mod.ts からインポートすると、↑ の記述によって https://deno.land/std@0.170.0/flags/mod.ts がインポートされ
-// その依存関係でインポートされる constant.ts 内における "Deno.xxx"" の記述によってブラウザがエラーを起こす可能性あり
-export * as NkUtils from "./gluon_utils/mod.ts"
-export * as NkAssets from "./assets/mod.ts"
+export { setHTML, type ViewConfig, type SetViewProps } from "./utils/setHTML.tsx"
+export { signal, type Signal } from "./utils/signals.js"
+
+export {
+  serve, serveStatic,
+  siftLog, timeKeeper,
+  blue, green, red, yellow, cyan, magenta,
+  type Handler, type Routes, type ServeStaticOptions,
+} from "./utils/niko_router/mod.ts"
