@@ -47,8 +47,8 @@ async function route_files_to_dict(){
 
 
 export async function setHTML(props: SetViewProps){
-  const { config } = props
   const { crient_path, google_fonts } = config
+  const { config, import_map_url } = props
 
   // ------ Set Twind config ----------
   if (config.twind_config === undefined){
@@ -90,7 +90,11 @@ export async function setHTML(props: SetViewProps){
 
   const script = await bundle(
     crient_path,
-    {allowRemote:true, compilerOptions:{jsxFactory:"preact.h"}}
+    {
+      allowRemote: true,
+      importMap: import_map_url,
+      compilerOptions:{jsxFactory:"preact.h"}
+    }
   ).then(result => result.code)
 
   await Deno.remove(crient_path)
