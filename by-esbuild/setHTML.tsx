@@ -1,8 +1,8 @@
 import { JSX, Fragment } from "https://esm.sh/preact@10.15.1"
 import { toFileUrl, resolve } from "https://deno.land/std@0.200.0/path/mod.ts"
 
-import * as esbuild from "https://deno.land/x/esbuild@v0.15.10/mod.js"
-import { denoPlugin } from "https://deno.land/x/esbuild_deno_loader@0.6.0/mod.ts"
+import * as esbuild from "https://deno.land/x/esbuild@v0.19.2/mod.js"
+import { denoPlugins } from "https://deno.land/x/esbuild_deno_loader@0.8.2/mod.ts"
 
 import { HeaderHTML } from "./HeaderHTML.tsx"
 import TwindConfig from "../utils/twind.config.ts"
@@ -88,11 +88,11 @@ export async function setHTML(props: SetViewProps){
   
   await Deno.writeTextFile(crient_path, CLIENT_TS)
 
-  const importMapURL = props.import_map_url ? toFileUrl(resolve(props.import_map_url)) : null
+  const importMapURL = props.import_map_url ? toFileUrl(resolve(props.import_map_url)).href : null
 
   esbuild.initialize({})
   const script = await esbuild.build({
-    plugins: [ denoPlugin(importMapURL ? {importMapURL} : undefined) ],
+    plugins: [ ...denoPlugins(importMapURL ? {importMapURL} : undefined) ],
     entryPoints: { main: toFileUrl(resolve(crient_path)).href },
     bundle: true,
     format: "esm",
