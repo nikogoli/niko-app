@@ -15,6 +15,7 @@ export type ViewConfig = {
   twind_config?: string | Record<string, unknown>,
   google_fonts?: Array<string>,
   css?: string,
+  header_elem?: string,
   use_worker: boolean,
   port: number,
   preact_version?: string,
