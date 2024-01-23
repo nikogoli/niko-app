@@ -5,7 +5,7 @@ export function HeaderHTML(props:{
   script: string,
   viewconfig: ViewConfig,
 }){
-  const { title, google_fonts, css, twind_config, header_elem } = props.viewconfig
+  const { title, google_fonts, css, twind_config } = props.viewconfig
   const fontlink = (google_fonts)
     ? google_fonts.reduce((txt, f) => txt+`family=${f.replaceAll(" ", "+")}&`, "https://fonts.googleapis.com/css2?") + "display=swap"
     : null
@@ -13,8 +13,6 @@ export function HeaderHTML(props:{
   const twind_config_script = (twind_config && typeof twind_config != "string")
     ? `twind.install(${JSON.stringify(twind_config)})`
     : null
-  
-  const header_elem_html = header_elem ?? null
 
   return(
     <head>
@@ -32,7 +30,6 @@ export function HeaderHTML(props:{
       <script type="module" dangerouslySetInnerHTML={{__html: props.script}}></script>
       <style> {`button:focus { outline-style: none !important}`} </style>
       { css ? <style>{css}</style> : <></> }
-      { header_elem_html ?? "" }
     </head>
   )
 }
