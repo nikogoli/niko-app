@@ -30,7 +30,8 @@ export type SetViewProps = {
   route: string,
   save_file: boolean,
   props_setter?: () => Record<string, unknown> | Promise<Record<string, unknown>>,
-  import_map_url?: string,
+  import_map_path?: string,
+  deno_json_path?: string,
 }
 
 
@@ -92,7 +93,31 @@ export async function setHTML(props: SetViewProps){
   
   await Deno.writeTextFile(crient_path, CLIENT_TS)
 
-  const importMapURL = props.import_map_url ? toFileUrl(resolve(props.import_map_url)).href : null
+  // -------- get import-map URL --------
+  const _TEMP_MAP_NAME = "temp_map.json"
+  let import_map_url: string | undefined = undefined
+  try {
+    if (props.import_map_path && props.import_map_path != ""){
+      await Deno.readTextFile(props.import_map_path)
+      import_map_url = props.import_map_path
+    } else {
+      throw new Error()
+    }
+  } catch (_error) {
+    if (props.deno_json_path && props.deno_json_path != ""){
+      try {
+        const imports = await Deno.readTextFile(props.deno_json_path)
+        .then(tx => JSON.parse(tx) as Record<string, Record<string, string>>).then(jdata => jdata.imports)
+        if (imports){
+          await Deno.writeTextFile(_TEMP_MAP_NAME, JSON.stringify({imports}))
+          import_map_url = `./${_TEMP_MAP_NAME}`
+        }
+      } catch (_error) {
+      // pass 
+      }
+    }
+  }
+  const importMapURL = import_map_url ? toFileUrl(resolve(import_map_url)).href : null
 
   esbuild.initialize({})
   const script = await esbuild.build({
@@ -109,13 +134,15 @@ export async function setHTML(props: SetViewProps){
 
   await Deno.remove(crient_path)
   await Deno.remove("./bundled.js")
+  if (import_map_url == `./${_TEMP_MAP_NAME}`){
+    await Deno.remove(_TEMP_MAP_NAME)
+  }
 
   const ActiveComp = MOD.default
 
 
   function View(){  
     const props = comp_props ? comp_props : {}
-  
     return(
       <html>
         <HeaderHTML script={script} viewconfig={config}/>

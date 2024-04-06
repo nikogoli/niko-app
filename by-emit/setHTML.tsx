@@ -25,7 +25,8 @@ export type SetViewProps = {
   route: string,
   save_file: boolean,
   props_setter?: () => Record<string, unknown> | Promise<Record<string, unknown>>,
-  import_map_url?: string,
+  import_map_path?: string,
+  deno_json_path?: string,
 }
 
 
@@ -47,7 +48,7 @@ async function route_files_to_dict(){
 
 
 export async function setHTML(props: SetViewProps){
-  const { config, import_map_url } = props
+  const { config } = props
   const { crient_path, google_fonts, preact_version } = config
 
   // ------ Set Twind config ----------
@@ -88,16 +89,44 @@ export async function setHTML(props: SetViewProps){
   
   await Deno.writeTextFile(crient_path, CLIENT_TS)
 
+  // -------- get import-map URL --------
+  const _TEMP_MAP_NAME = "temp_map.json"
+  let importMapURL: string | undefined = undefined
+  try {
+    if (props.import_map_path && props.import_map_path != ""){
+      await Deno.readTextFile(props.import_map_path)
+      importMapURL = props.import_map_path
+    } else {
+      throw new Error()
+    }
+  } catch (_error) {
+    if (props.deno_json_path && props.deno_json_path != ""){
+      try {
+        const imports = await Deno.readTextFile(props.deno_json_path)
+        .then(tx => JSON.parse(tx) as Record<string, Record<string, string>>).then(jdata => jdata.imports)
+        if (imports){
+          await Deno.writeTextFile(_TEMP_MAP_NAME, JSON.stringify({imports}))
+          importMapURL = `./${_TEMP_MAP_NAME}`
+        }
+      } catch (_error) {
+      // pass 
+      }
+    }
+  }
+
   const script = await bundle(
     crient_path,
     {
       allowRemote: true,
-      importMap: import_map_url,
+      importMap: importMapURL,
       compilerOptions:{jsxFactory:"preact.h"}
     }
   ).then(result => result.code)
 
   await Deno.remove(crient_path)
+  if (importMapURL == `./${_TEMP_MAP_NAME}`){
+    await Deno.remove(_TEMP_MAP_NAME)
+  }
 
   const ActiveComp = MOD.default
 
@@ -122,6 +151,7 @@ export async function setHTML(props: SetViewProps){
   }`
   const renderToString = await import(modPath).then(mod => mod.renderToString)
   const html = renderToString(View())
+
   if (props.save_file){
     const tempFilePath = await Deno.makeTempFile({suffix: ".html"})
     await Deno.writeTextFile(tempFilePath, html)
