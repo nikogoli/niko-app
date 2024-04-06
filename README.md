@@ -1,2 +1,2 @@
-# niko-gluon
- Library for feno + gluon + preact projects
+# niko-app
+Library for deno + gluon/webview + preact projects
