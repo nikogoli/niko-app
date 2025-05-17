@@ -1,1 +1,1 @@
-export { Webview, SizeHint } from "jsr:@webview/webview"
+export { Webview, SizeHint } from "jsr:@webview/webview@0.9.0"

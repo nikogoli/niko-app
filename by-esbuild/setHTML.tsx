@@ -1,8 +1,8 @@
 import { JSX, Fragment, ComponentProps } from "https://esm.sh/preact@10.15.1"
-import { toFileUrl, resolve } from "https://deno.land/std@0.200.0/path/mod.ts"
+import { toFileUrl, resolve } from "jsr:@std/path@1.0.9"
 
-import * as esbuild from "https://deno.land/x/esbuild@v0.19.2/mod.js"
-import { denoPlugins } from "https://deno.land/x/esbuild_deno_loader@0.8.2/mod.ts"
+import * as esbuild from "https://deno.land/x/esbuild@v0.25.4/mod.js"
+import { denoPlugins } from "jsr:@luca/esbuild-deno-loader@0.11.1"
 
 import { HeaderHTML } from "./HeaderHTML.tsx"
 import TwindConfig from "../utils/twind.config.ts"

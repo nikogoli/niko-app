@@ -1,6 +1,7 @@
 /** @jsx h */
 import { h, JSX, Fragment } from "https://esm.sh/preact@10.15.1"
-import { toFileUrl, resolve } from "https://deno.land/std@0.200.0/path/mod.ts"
+import { toFileUrl, resolve } from "jsr:@std/path@1.0.9"
+/** 0.4 にアップデートが必要。ただし、その場合は importMap → imports のオプション変更への対応が必要 */
 import { bundle } from "https://deno.land/x/emit@0.31.0/mod.ts"
 
 import { HeaderHTML } from "./HeaderHTML.tsx"

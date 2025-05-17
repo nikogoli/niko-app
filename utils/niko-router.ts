@@ -1,8 +1,8 @@
 import { inMemoryCache } from "https://deno.land/x/httpcache@0.1.2/in_memory.ts"
-import { Status, STATUS_TEXT,} from "https://deno.land/std@0.200.0/http/http_status.ts"
-import { contentType } from "https://deno.land/std@0.200.0/media_types/content_type.ts"
-import { blue, green, red, yellow, cyan, magenta } from "https://deno.land/std@0.200.0/fmt/colors.ts"
-import { filterValues } from "https://deno.land/std@0.200.0/collections/filter_values.ts"
+import { STATUS_CODE, STATUS_TEXT,} from "jsr:@std/http@1.0.16/status"
+import { contentType } from "jsr:@std/media-types@1.1.0"
+import { blue, green, red, yellow, cyan, magenta } from "jsr:@std/fmt@1.0.7/colors"
+import { filterValues } from "jsr:@std/collections@1.1.0"
 
 export { blue, green, red, yellow, cyan, magenta }
 
@@ -137,10 +137,10 @@ export function json(
     headers.set("Content-Type", "application/json; charset=utf-8");
   }
   const statusText = init?.statusText ??
-    STATUS_TEXT[(init?.status as Status) ?? Status.OK];
+    STATUS_TEXT[(init?.status as typeof STATUS_CODE["NotFound"]) ?? STATUS_CODE.OK];
   return new Response(JSON.stringify(jsobj) + "\n", {
     statusText,
-    status: init?.status ?? Status.OK,
+    status: init?.status ?? STATUS_CODE.OK,
     headers,
   });
 }
