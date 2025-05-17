@@ -48,7 +48,7 @@ function defaultNotFoundPage() {
  */
 export function serve(
   userRoutes: Routes,
-  options: Deno.ServeOptions = { port: 8000 },
+  options: Deno.ServeTcpOptions = { port: 8000 },
 ): void {
   routes = { ...routes, ...userRoutes }
   Deno.serve(options, (req, info) => handleRequest(req, routes, info))
@@ -76,7 +76,7 @@ async function handleRequest(
           )
           try {
             response = await routes[route](request, params, info);
-          } catch (error) {
+          } catch (error: any) {
             if (error.name == "NotFound") {
               break;
             }
@@ -106,7 +106,7 @@ async function handleRequest(
     );
 
     return response;
-  } catch (error) {
+  } catch (error: any) {
     console.error("Error serving request:", error);
     return json({ error: error.message }, { status: 500 });
   }
