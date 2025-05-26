@@ -15,9 +15,10 @@ export type ViewConfig = {
   crient_path: string,
   twind_config?: string | Record<string, unknown>,
   google_fonts?: Array<string|{name:string, weights:Array<number>}>,
-  header_elem?: {
-    link?: Array<ComponentProps<"link">>,
-    style? : Array<CSSTextString>
+  header_elems?: {
+    metas?: Array<ComponentProps<"meta">>,
+    links?: Array<ComponentProps<"link">>,
+    styles? : Array<CSSTextString>
   },
   html_attributs?: ComponentProps<"html">,
   body_attributs?: ComponentProps<"body">,

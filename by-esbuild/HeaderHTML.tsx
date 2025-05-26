@@ -5,7 +5,7 @@ export function HeaderHTML(props:{
   script: string,
   viewconfig: ViewConfig,
 }){
-  const { title, google_fonts, twind_config, header_elem } = props.viewconfig
+  const { title, google_fonts, twind_config, header_elems } = props.viewconfig
   let fontlink: string|null = null
   if (google_fonts){
     fontlink = google_fonts.reduce((txt, f) => {
@@ -20,16 +20,16 @@ export function HeaderHTML(props:{
     : null
   
   const other_elems = [<></>]
-  if (header_elem?.link){
-    header_elem.link.forEach(d => other_elems.push(<link {...d}></link>))
-  }
-  if (header_elem?.style){
-    header_elem.style.forEach(css => other_elems.push(<style>{css}</style>))
+  if (header_elems){
+    const { metas, links, styles } = header_elems
+    metas?.forEach(attrs => other_elems.push(<meta {...attrs} />))
+    links?.forEach(attrs => other_elems.push(<link {...attrs} />))
+    styles?.forEach(css => other_elems.push(<style>{css}</style>))
   }
 
   return(
     <head>
-      <meta charSet="utf-8"/>
+      { header_elems?.metas ?? <meta charSet="utf-8" /> }
       <title>{title}</title>
       { (google_fonts && fontlink)
         ? <link href={fontlink} rel="stylesheet"></link>
