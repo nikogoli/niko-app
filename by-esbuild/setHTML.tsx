@@ -19,6 +19,8 @@ export type ViewConfig = {
     link?: Array<ComponentProps<"link">>,
     style? : Array<CSSTextString>
   },
+  html_attributs?: ComponentProps<"html">,
+  body_attributs?: ComponentProps<"body">,
   use_worker: boolean,
   port: number,
   preact_version?: string,
@@ -55,6 +57,9 @@ async function route_files_to_dict(){
 export async function setHTML(props: SetViewProps){
   const { config } = props
   const { crient_path, google_fonts, preact_version } = config
+
+  const html_attributs = config.html_attributs ?? {}
+  const body_attributs = config.body_attributs ?? {}
 
   // ------ Set Twind config ----------
   if (config.twind_config === undefined){
@@ -144,9 +149,9 @@ export async function setHTML(props: SetViewProps){
   function View(){  
     const props = comp_props ? comp_props : {}
     return(
-      <html>
+      <html { ...html_attributs }>
         <HeaderHTML script={script} viewconfig={config}/>
-        <body>
+        <body { ...body_attributs }>
           <ActiveComp {...props}/>
           { (google_fonts)
             ? <style> {`body { font-family: \'${google_fonts[0]}\'}`} </style>
