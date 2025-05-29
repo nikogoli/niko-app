@@ -1,4 +1,3 @@
-import { inMemoryCache } from "https://deno.land/x/httpcache@0.1.2/in_memory.ts"
 import { STATUS_CODE, STATUS_TEXT,} from "jsr:@std/http@1.0.16/status"
 import { contentType } from "jsr:@std/media-types@1.1.0"
 import { blue, green, red, yellow, cyan, magenta } from "jsr:@std/fmt@1.0.7/colors"
@@ -18,7 +17,6 @@ export interface Routes {
 
 
 let routes: Routes = { 404: defaultNotFoundPage }
-const globalCache = inMemoryCache(20)
 
 
 
@@ -63,7 +61,7 @@ async function handleRequest(
   const { search, pathname } = new URL(request.url)
   try {
     const startTime = Date.now();
-    let response = await globalCache.match(request);
+    let response: Response | undefined = undefined
     if (typeof response === "undefined") {
       for (const route of Object.keys(routes)) {
         const [pathname, search] = route.split("?")
@@ -86,8 +84,6 @@ async function handleRequest(
           break;
         }
       }
-    } else {
-      response.headers.set("x-function-cache-hit", "true");
     }
 
     // return not found page if no handler is found.
@@ -157,10 +153,6 @@ export interface ServeStaticOptions {
     request: Request,
     response: Response,
   ) => Promise<Response> | Response;
-  /** Disable caching of the responses.
-   *
-   * @default true */
-  cache?: boolean;
 }
 
 /** Serve static files hosted on the internet or relative to your source code.
@@ -180,7 +172,7 @@ export interface ServeStaticOptions {
  */
 export function serveStatic(
   relativePath: string,
-  { baseUrl, intervene, cache = true }: ServeStaticOptions,
+  { baseUrl, intervene }: ServeStaticOptions,
 ): Handler {
   return async (
     request: Request,
@@ -198,9 +190,7 @@ export function serveStatic(
     const fileUrl = new URL(filePath, baseUrl);
 
     let response: Response | undefined;
-    if (cache) {
-      response = await globalCache.match(request);
-    }
+    
 
     if (typeof response === "undefined") {
       const body = await Deno.readFile(fileUrl);
@@ -211,15 +201,6 @@ export function serveStatic(
       }
       if (typeof intervene === "function") {
         response = await intervene(request, response);
-      }
-
-      if (cache) {
-        // We don't want to cache if the resource size if greater than 10MB.
-        // The size is arbitrary choice.
-        const TEN_MB = 1024 * 1024 * 10;
-        if (Number(response.headers.get("content-length")) < TEN_MB) {
-          await globalCache.put(request, response);
-        }
       }
     }
 
