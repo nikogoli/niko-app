@@ -149,13 +149,16 @@ export async function setHTML(props: SetViewProps){
 
   function View(){  
     const props = comp_props ? comp_props : {}
+    const font_styles = google_fonts
+      ? google_fonts.map(ft => typeof ft == "string" ? ft : ft.name)
+      : null
     return(
       <html { ...html_attributs }>
         <HeaderHTML script={script} viewconfig={config}/>
         <body { ...body_attributs }>
           <ActiveComp {...props}/>
-          { (google_fonts)
-            ? <style> {`body { font-family: \'${google_fonts[0]}\'}`} </style>
+          { (font_styles)
+            ? <style> {`body { font-family: \'${font_styles[0]}\'}`} </style>
             : <Fragment></Fragment>
           }
         </body>
