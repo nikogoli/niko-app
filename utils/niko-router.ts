@@ -213,17 +213,18 @@ export function serveStatic(
 
 
 
-export function Response404(props:{
-  header_opt: NonNullable<ConstructorParameters<typeof Headers>[0]>
+export function ResponseWithFailedMsg(props:{
+  header_opt: NonNullable<ConstructorParameters<typeof Headers>[0]>,
+  status_code?: number,
   log_msg?: string,
   resp_msg?: string,
 }){
-  const { header_opt, log_msg, resp_msg } = props
+  const { header_opt, status_code, log_msg, resp_msg } = props
   if (log_msg){
     console.log(`\n${red("Failed")}: ${log_msg}`)
   }
   const headers = new Headers({...header_opt, "Content-Type":contentType("text/plain")})
-  return new Response(resp_msg ?? "", {headers, status: 404})
+  return new Response(resp_msg ?? "", {headers, status: status_code ?? 404})
 }
 
 
