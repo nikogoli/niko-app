@@ -98,7 +98,11 @@ async function handleRequest(
           ? String.fromCodePoint(0x26a1)
           : ""
       }${Date.now() - startTime}ms ${
-        response.status != 404 ? blue(String(response.status)) : red(String(response.status))}`,
+        String(response.status).startsWith("4")
+          ? red(String(response.status))
+          : String(response.status).startsWith("5")
+            ? magenta(String(response.status))
+            : blue(String(response.status))}`,
     );
 
     return response;
