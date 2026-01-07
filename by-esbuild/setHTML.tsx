@@ -167,11 +167,11 @@ export async function setHTML(props: SetViewProps){
   }
 
 
-  const modPath = `https://esm.sh/preact-render-to-string@6.2.1?deps=preact@${
+  const modPath = `https://esm.sh/preact-render-to-string@6.6.5?deps=preact@${
     preact_version ?? "10.15.1"
   }`
-  const renderToString = await import(modPath).then(mod => mod.renderToString)
-  const html = renderToString(View())
+  const renderToStringAsync = await import(modPath).then(mod => mod.renderToStringAsync)
+  const html = await renderToStringAsync(View())
 
   if (props.save_file){
     const tempFilePath = await Deno.makeTempFile({suffix: ".html"})
